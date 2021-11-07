@@ -1,0 +1,25 @@
+{% extends 'base.html'%}
+{% block content %}
+<br/>
+<br/>
+<div class="container" align="center">
+    <div class="row">
+        <div class="col-sm" align="left", style="padding-top: 10%;">
+            <h1>Fast and Secure Video</h1>
+            <h1 style="color: orangered;">Attendence System</h1>
+            <br/>
+            <h5 style="color: gray;">This Video Attendence portal provide</h5>
+            <h5 style="color: gray;">everything that you need information</h5>
+            <h5 style="color: gray;">about Attendence</h5>
+            <br/>
+            <div>
+                <a href="/makeattendence"><button class="btn btn-danger">Make Attendence</button></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="/viewattendence"><button class="btn btn-info">View Attendence</button></a>
+            </div>
+        </div>
+        <div class="col-sm">
+            <img src="/static/home.png" alt="home" style="width: 95%;" />
+        </div>
+    </div>
+</div>
+{% endblock %}

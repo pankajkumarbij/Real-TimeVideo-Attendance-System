@@ -1,0 +1,54 @@
+{% extends 'base.html'%}
+{% block content %}
+<br/>
+<br/>
+<br/>
+<meta http-equiv="refresh" content="10">
+<div class="container">
+    <table class="table">
+        <thead class="thead-info">
+            <tr>
+                <th scope="col">Batch</th>
+                <th scope="col">Semester</th>
+                <th scope="col">Subject</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{session.batch}}</td>
+                <td>{{session.sem}}</td>
+                <td>{{session.sub}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br/>
+    <table id="example" class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Roll No</th>
+                <th scope="col">Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <th scope="row">{{loop.index}}</th>
+                <td>{{row[5]}}</td>
+                <td>{{row[6]}}</td>
+                <td>{{row[8]}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.js" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function(){
+        $('#example').DataTable();
+    });
+</script>
+{% endblock %}

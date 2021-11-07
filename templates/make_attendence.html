@@ -1,0 +1,45 @@
+{% extends 'base.html'%}
+{% block content %}
+
+{% if session.batch %}
+<div class="card container" style="padding: 2%;margin-top: 1%;">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Batch</th>
+                <th scope="col">Semester</th>
+                <th scope="col">Subject</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{session.batch}}</td>
+                <td>{{session.sem}}</td>
+                <td>{{session.sub}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="justify-content: center; display: flex;"><img src="{{ url_for('video') }}" /></div>
+    <a href="/clearattendenceinfo"><button style="width: 100%;" class="btn btn-outline-danger">Clear Attendence Info</button></a>
+</div>
+{% else %}
+<form class="container" method="POST", action="">
+    <div class="card" style="padding: 2%;margin-top: 5%;">
+        <center><b><i><u><h3>Attendence Details</h3></u></i></b></center>
+        <div class="form-group">
+            <label for="exampleInputBatch">Batch</label>
+            <input name="batch" type="text" class="form-control" id="exampleInputBatch" aria-describedby="emailHelp">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputSem">Semester</label>
+            <input name="sem" type="text" class="form-control" id="exampleInputSem">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputSub">Subject</label>
+            <input name="sub" type="text" class="form-control" id="exampleInputSub">
+        </div>
+        <button type="submit" class="btn btn-outline-success">Make Attendence</button>
+    </div>
+</form>
+{% endif %}
+{% endblock %}
