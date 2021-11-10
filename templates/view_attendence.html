@@ -4,6 +4,7 @@
 <br/>
 <br/>
 <meta http-equiv="refresh" content="10">
+{% if session.batch %}
 <div class="container">
     <table class="table">
         <thead class="thead-info">
@@ -11,6 +12,8 @@
                 <th scope="col">Batch</th>
                 <th scope="col">Semester</th>
                 <th scope="col">Subject</th>
+                <th scope="col">Present</th>
+                <th scope="col">Absent</th>
             </tr>
         </thead>
         <tbody>
@@ -18,10 +21,13 @@
                 <td>{{session.batch}}</td>
                 <td>{{session.sem}}</td>
                 <td>{{session.sub}}</td>
+                <td>{{total}}</td>
+                <td>{{ttotal-total}}</td>
             </tr>
         </tbody>
     </table>
     <br/>
+    <h3>Present Student List:-</h3>
     <table id="example" class="table">
         <thead class="thead-dark">
             <tr>
@@ -42,7 +48,31 @@
             {% endfor %}
         </tbody>
     </table>
+    <h3>Absent Student List:-</h3>
+    <table id="example" class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Roll No</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in tdata %}
+                <tr>
+                    <th scope="row">{{loop.index}}</th>
+                    <td>{{row[1]}}</td>
+                    <td>{{row[2]}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
+{% else %}
+<center>
+    <h3>Attendance details not setup</h3>
+</center>
+{% endif %}
 <script src="https://code.jquery.com/jquery-3.5.1.js" crossorigin="anonymous"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>

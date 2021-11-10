@@ -184,6 +184,8 @@ def make_attendence():
 def view_attendence():
     if not session.get("email"):
         return redirect("/login")
+    if not session.get("batch"):
+        return render_template('view_attendence.html')
     now = datetime.now()
     date = now.strftime("%Y-%m-%d")
     email = session.get("email")
@@ -193,7 +195,13 @@ def view_attendence():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM attendence where email=%s and date=%s and batch=%s and sem=%s and subject=%s", (email, date, batch, sem, sub))
     data = cur.fetchall()
-    return render_template('view_attendence.html', data=data, total=len(data))
+    rolls = []
+    for row in data:
+        rolls.append(row[6])
+    tcur = mysql.connection.cursor()
+    tcur.execute("SELECT * FROM student where batch=%s and roll not in %s", (batch, rolls))
+    tdata = tcur.fetchall()
+    return render_template('view_attendence.html', data=data, total=len(data), tdata=tdata, ttotal=len(tdata))
 
 @app.route('/viewallattendence')
 def view_all_attendence():
@@ -220,6 +228,7 @@ def register_student():
         details = request.form
         name = details['name']
         roll = details['roll']
+        batch = details['batch']
         file = request.files['file']
         if file.filename == '':
             flash('No selected file')
@@ -227,6 +236,10 @@ def register_student():
         if file and allowed_file(file.filename):
             filename = secure_filename(name+"."+roll+"."+file.filename.rsplit('.', 1)[1].lower())
             file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/regImg", filename))
+            cur = mysql.connection.cursor()
+            cur.execute("INSERT INTO student(name, roll, batch) VALUES (%s, %s, %s)", (name, roll, batch))
+            mysql.connection.commit()
+            cur.close()
             return render_template('index.html', message="Student Successfully Registered", success=True)
     return render_template('register_student.html')
     
