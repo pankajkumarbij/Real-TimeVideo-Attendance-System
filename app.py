@@ -8,8 +8,10 @@ import os
 from datetime import datetime
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = '/home/pankajkumarbij/projects/Flask Video Attendence System/regImg'
+UPLOAD_FOLDER = '/home/pankajkumarbij/projects/Real-Time Video-Based Attendance System'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+ALLOWED_EXTENSIONS1 = {'mp4', 'avi', 'webm', 'flv', 'mkv', 'mov', 'wmv', 'avchd'}
 
 app=Flask(__name__)
 
@@ -65,8 +67,8 @@ def makeAttendence(name, roll, email, batch, sem, subject):
         cur.close()
 
 class Video(object):
-    def __init__(self, email, batch, sem, subject):
-        self.video=cv2.VideoCapture(0)
+    def __init__(self, email, batch, sem, subject, video):
+        self.video=cv2.VideoCapture(video)
         self.email=email
         self.batch=batch
         self.sem=sem
@@ -111,11 +113,14 @@ def gen(camera):
 @app.route('/video')
 
 def video():
+    video = session.get("video")
     email = session.get("email")
     batch = session.get("batch")
     sem = session.get("sem")
     subject = session.get("sub")
-    return Response(gen(Video(email, batch, sem, subject)),
+    if video==None:
+        video=0
+    return Response(gen(Video(email, batch, sem, subject, video)),
     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -151,11 +156,21 @@ def login():
         return render_template('login.html', message="Error!! Data is not matched", success=False)
     return render_template('login.html')
 
+def allowed_file2(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS1
+
 @app.route('/makeattendence', methods=['GET', 'POST'])
 def make_attendence():
     if not session.get("email"):
         return redirect("/login")
-    if request.method == "POST":
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file2(file.filename):
+            filename = secure_filename("video."+file.filename.rsplit('.', 1)[1].lower())
+            os.remove('video/'+filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/video", filename))
+            session['video'] = "video/"+filename
         details = request.form
         batch = details['batch']
         sem = details['sem']
@@ -211,7 +226,7 @@ def register_student():
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(name+"."+roll+"."+file.filename.rsplit('.', 1)[1].lower())
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/regImg", filename))
             return render_template('index.html', message="Student Successfully Registered", success=True)
     return render_template('register_student.html')
     
@@ -221,6 +236,7 @@ def logout():
     session['batch'] = None
     session['sem'] = None
     session['sub'] = None
+    session['video'] = None
     return redirect("/")
 
 @app.route("/clearattendenceinfo")
@@ -228,6 +244,7 @@ def clear_attendence_info():
     session['batch'] = None
     session['sem'] = None
     session['sub'] = None
+    session['video'] = None
     return redirect('/makeattendence')
 
 if __name__ == '__main__':
