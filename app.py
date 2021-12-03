@@ -131,6 +131,9 @@ def register():
         email = details['email']
         password = details['password']
         cpassword = details['cpassword']
+        sc = details['sc']
+        if(sc!='12345'):
+            return render_template('register.html', message="Error!! You are not auth to register", success=False)
         if(password!=cpassword):
             return render_template('register.html', message="Error!! Password is not matched", success=False)
         cur = mysql.connection.cursor()
